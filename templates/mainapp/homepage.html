@@ -1,0 +1,19 @@
+{% extends 'mainapp/base.html' %}
+{% load static %}
+{% block title %}HomePage{% endblock %}
+
+{% block extra_head %}
+    <link rel="stylesheet" href="{% static 'css/homepage.css' %}">
+    <style>
+    </style>
+{% endblock %}
+
+{% block content %}
+    <div class="container">
+        <div class="row">
+            <div class="col-md-12">
+                <h1>HomePage</h1>
+            </div>
+        </div>
+    </div>
+{% endblock %}
