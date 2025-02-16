@@ -96,6 +96,7 @@
             <div class="col-md-8">
                 <div class="trip-container">
                     <h3>Recent Trips</h3>
+            
                     <div class="trip-log-wrapper">
                         <div class="trip-log-container">
                             {% if trip_logs %}
@@ -119,8 +120,25 @@
                             {% endif %}
                         </div>
                     </div>
+            
+                    <!-- Pagination Buttons -->
+                    <div class="pagination bottom-pagination">
+                        {% if trip_logs.has_previous %}
+                            <button class="pagination-btn first-btn" onclick="location.href='?page=1'">First</button>
+                            <button class="pagination-btn prev-btn" onclick="location.href='?page={{ trip_logs.previous_page_number }}'">Previous</button>
+                        {% endif %}
+            
+                        <span class="page-info">Page {{ trip_logs.number }} of {{ trip_logs.paginator.num_pages }}</span>
+            
+                        {% if trip_logs.has_next %}
+                            <button class="pagination-btn next-btn" onclick="location.href='?page={{ trip_logs.next_page_number }}'">Next</button>
+                            <button class="pagination-btn last-btn" onclick="location.href='?page={{ trip_logs.paginator.num_pages }}'">Last</button>
+                        {% endif %}
+                    </div>
                 </div>
             </div>
+            
+            
         </div>
     </div>
 {% endblock %}

@@ -4,10 +4,12 @@ from django.contrib import messages
 from mainapp.models import TripLog
 from .ml.scripts.predict_co2 import predict_co2_emission
 from django.contrib.auth.decorators import login_required
+from django.core.paginator import Paginator
 # Create your views here.
 
 @login_required(login_url='/login/')
 def homepage(request):
+    
     return render(request, 'mainapp/homepage.html')
 
 
@@ -93,8 +95,13 @@ def logtrip(request):
         messages.success(request, "Trip Logged Successfully!")
         return redirect("logtrip")
     
-    trip_logs = TripLog.objects.filter(user=user).order_by("-date")[:10]  # Latest trips first
-    return render(request, "mainapp/logtrip.html", {"trip_logs": trip_logs})
+    trip_logs = TripLog.objects.filter(user=user).order_by("-date", "-created_at") 
+
+    # Paginate (5 logs per page)
+    paginator = Paginator(trip_logs, 5)
+    page_number = request.GET.get("page")  # Get the page number from URL
+    trip_logs_page = paginator.get_page(page_number)
+    return render(request, "mainapp/logtrip.html", {"trip_logs": trip_logs_page})
 
 
 

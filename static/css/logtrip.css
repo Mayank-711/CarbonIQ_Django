@@ -280,3 +280,57 @@ button:active {
     border-left: 6px solid #ffc107;
     color: #856404;
 }
+
+
+/* Pagination Styles */
+/* Pagination Container */
+.pagination {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 6px;
+    margin-top: 15px;
+}
+
+/* Small Pagination Buttons */
+.pagination-btn {
+    max-width: 10px;
+    padding: 5px 10px;  /* Reduced padding */
+    border: none;
+    border-radius: 5px; /* Smaller, rounded corners */
+    font-size: 12px;  /* Smaller text */
+    font-weight: 600;
+    color: white;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    background: linear-gradient(135deg, #00563B, #007A5E);
+}
+
+/* Hover Effects */
+.pagination-btn:hover {
+    background: linear-gradient(135deg, #003D29, #00563B);
+    transform: translateY(-1px);
+    box-shadow: 0 2px 4px rgba(0, 86, 59, 0.2);
+}
+
+/* Button Click Effect */
+.pagination-btn:active {
+    transform: translateY(0);
+    box-shadow: 0 1px 3px rgba(0, 86, 59, 0.15);
+}
+
+/* Disabled Buttons */
+.pagination-btn:disabled {
+    background: #ccc;
+    cursor: not-allowed;
+    transform: none;
+    box-shadow: none;
+}
+
+/* Page Info */
+.page-info {
+    font-size: 12px;  /* Smaller text */
+    font-weight: 600;
+    color: #00563B;
+}
+
