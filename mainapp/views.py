@@ -1,16 +1,20 @@
+from django.http import JsonResponse
 from django.shortcuts import render,redirect
+from django.contrib import messages
+from mainapp.models import TripLog
 from .ml.scripts.predict_co2 import predict_co2_emission
+from django.contrib.auth.decorators import login_required
 # Create your views here.
 
-
+@login_required(login_url='/login/')
 def homepage(request):
     return render(request, 'mainapp/homepage.html')
 
 
-
+@login_required(login_url='/login/')
 def logtrip(request):
     user = request.user
-
+    
     if request.method == "POST":
         source_address = request.POST.get("source")
         source_lat = request.POST.get("source_lat")
@@ -22,19 +26,19 @@ def logtrip(request):
         date = request.POST.get("date")
         time_taken = float(request.POST.get("time_taken"))
         electric_vehicle = request.POST.get("electric_vehicle", "No") == "Yes"
-        passengers = request.POST.get("passengers", 1)
+        passengers = int(request.POST.get("passengers", 1))
         api_distance = float(request.POST.get("calculated_distance", "0"))  # in kilometers
         api_duration = float(request.POST.get("calculated_duration", "0"))  # in minutes
 
         # Debugging logs
-        print("==== LOG TRIP DATA ====")
-        print("Source:", source_address, "Coordinates:", f"{source_lat}, {source_lng}")
-        print("Destination:", destination_address, "Coordinates:", f"{dest_lat}, {dest_lng}")
-        print("Mode of Transport:", mode_of_transport)
-        print("Electric Vehicle:", electric_vehicle)
-        print("Passengers (Before Adjustment):", passengers)
-        print("Distance (API):", api_distance, "km, Time Taken (API):", api_duration, "mins")
-        print("Time Taken (User Entered):", time_taken, "User:", user)
+        # print("==== LOG TRIP DATA ====")
+        # print("Source:", source_address, "Coordinates:", f"{source_lat}, {source_lng}")
+        # print("Destination:", destination_address, "Coordinates:", f"{dest_lat}, {dest_lng}")
+        # print("Mode of Transport:", mode_of_transport)
+        # print("Electric Vehicle:", electric_vehicle)
+        # print("Passengers (Before Adjustment):", passengers)
+        # print("Distance (API):", api_distance, "km, Time Taken (API):", api_duration, "mins")
+        # print("Time Taken (User Entered):", time_taken, "User:", user)
 
         # Adjust passenger count for public transport
         public_transports = ["bus", "train", "metro", "actrain", "acbus"]
@@ -50,16 +54,48 @@ def logtrip(request):
             mode_of_transport = "e" + mode_of_transport
 
         # Call the prediction function
-        predicted_co2 = get_predictions(mode_of_transport, passengers, api_distance, api_duration,time_taken)
-
+        predicted_co2 = round(get_predictions(mode_of_transport, passengers, api_distance, api_duration, time_taken), 2)
         # Debugging output
-        print("Final Mode of Transport:", mode_of_transport)
-        print("Passengers (Adjusted):", passengers)
-        print(f"Predicted CO2 Emission: {predicted_co2:.2f}g")
+        # print("Final Mode of Transport:", mode_of_transport)
+        # print("Passengers (Adjusted):", passengers)
+        # print(f"Predicted CO2 Emission: {predicted_co2:.2f}g")
+        public_transport_option = False
+        greener_travel = False
+        public_transports = ["bus", "ebus", "acbus", "eacbus", "etrain", "actrain"]
+        if mode_of_transport in public_transports:
+            public_transport_option = True
+            greener_travel = True
 
-        return render(request, 'mainapp/logtrip.html')
+        if mode_of_transport[0] == "e":
+            greener_travel = True
+        if passengers > 3:
+            greener_travel = True
+        
+        TripLog.objects.create(
+            user=user,
+            source_address=source_address,
+            source_lat=source_lat,
+            source_lng=source_lng,
+            destination_address=destination_address,
+            dest_lat=dest_lat,
+            dest_lng=dest_lng,
+            mode_of_transport=mode_of_transport,
+            time_taken=time_taken,
+            api_duration=api_duration,
+            api_distance=api_distance,
+            electric_vehicle=electric_vehicle,
+            co2_emission=predicted_co2,
+            date=date,
+            passengers=passengers,
+            public_transport=public_transport_option,
+            greener_travel=greener_travel
+        )
+        messages.success(request, "Trip Logged Successfully!")
+        return redirect("logtrip")
+    
+    trip_logs = TripLog.objects.filter(user=user).order_by("-date")[:10]  # Latest trips first
+    return render(request, "mainapp/logtrip.html", {"trip_logs": trip_logs})
 
-    return render(request, 'mainapp/logtrip.html')
 
 
 def get_predictions(mode_of_transport, passengers, distance, time,time_taken):
@@ -76,7 +112,9 @@ def get_predictions(mode_of_transport, passengers, distance, time,time_taken):
     if mode_of_transport == "ecar":
         new_passengers = passengers/2
         co2_count = co2_count/ new_passengers
-    
+    if mode_of_transport == "actrain":
+        co2_count = co2_count/2
+
     if time_taken > time:
         extra_time = float(time_taken) - time
         carbonfootprint_per_min = co2_count / time
@@ -85,6 +123,6 @@ def get_predictions(mode_of_transport, passengers, distance, time,time_taken):
     
     return co2_count
 
-
+@login_required(login_url='/login/')
 def leaderboards(request):
     return render(request,'mainapp/leaderboards.html')

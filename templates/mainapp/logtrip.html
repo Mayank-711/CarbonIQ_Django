@@ -85,6 +85,29 @@
             </div>
         </div>
     </div>
+    {% if trip_logs %}
+    <h3>Recent Trips</h3>
+    <div class="trip-log-container">
+        {% for trip in trip_logs %}
+            <div class="trip-summary {% if trip.greener_travel %}green-trip{% else %}red-trip{% endif %}">
+                <div class="trip-row">
+                    <span><strong>From:</strong> {{ trip.source_address }}</span>
+                    <span><strong>To:</strong> {{ trip.destination_address }}</span>
+                </div>
+                <div class="trip-row">
+                    <span><strong>Date:</strong> {{ trip.date }}</span>
+                    <span><strong>Mode:</strong> {{ trip.mode_of_transport }}</span>
+                    <span><strong>Time:</strong> {{ trip.time_taken }} mins</span>
+                </div>
+                <div class="trip-row">
+                    <span><strong>Distance:</strong> {{ trip.api_distance }} km</span>
+                    <span><strong>CO₂ Emission:</strong> {{ trip.co2_emission }}g</span>
+                </div>
+            </div>
+        {% endfor %}
+    </div>
+{% endif %}
+
 {% endblock %}
 
 {% block extra_scripts %}

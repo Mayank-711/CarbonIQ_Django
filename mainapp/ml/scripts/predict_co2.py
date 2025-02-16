@@ -56,11 +56,11 @@ def predict_co2_emission(mode_of_transport: str, passengers: int, distance: floa
         predicted_co2 *= 0.75
 
     # Debugging logs
-    print("===== Prediction Debugging =====")
-    print(f"Mode of Transport: {mode_of_transport}")
-    print(f"Passengers: {passengers}")
-    print(f"Distance: {distance} km")
-    print(f"Time Taken: {time} mins")
-    print(f"Predicted CO2 Emission: {predicted_co2[0]:.2f}g")
+    # print("===== Prediction Debugging =====")
+    # print(f"Mode of Transport: {mode_of_transport}")
+    # print(f"Passengers: {passengers}")
+    # print(f"Distance: {distance} km")
+    # print(f"Time Taken: {time} mins")
+    # print(f"Predicted CO2 Emission: {predicted_co2[0]:.2f}g")
 
     return float(predicted_co2[0])

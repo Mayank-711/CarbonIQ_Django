@@ -261,3 +261,61 @@
         .passenger-input{
             width: 170px;
         }
+
+
+        /* Trip Log Styles */
+.trip-summary {
+    padding: 15px;
+    margin: 20px 0;
+    border-radius: 8px;
+    box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.1);
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+/* Green trip (eco-friendly) */
+.green-trip {
+    background: #e6f7e6;
+    border-left: 6px solid #28a745;
+}
+
+/* Red trip (not eco-friendly) */
+.red-trip {
+    background: #fdecec;
+    border-left: 6px solid #dc3545;
+}
+
+/* Hover effect */
+.trip-summary:hover {
+    transform: scale(1.02);
+    box-shadow: 0px 6px 12px rgba(0, 0, 0, 0.15);
+}
+
+/* Trip Details Layout */
+.trip-summary h3 {
+    margin: 0 0 10px 0;
+    font-size: 18px;
+    color: #333;
+    font-weight: bold;
+}
+
+/* Row styling */
+.trip-row {
+    display: flex;
+    justify-content: space-between;
+    padding: 5px 0;
+    font-size: 14px;
+    color: #555;
+}
+
+/* Strong emphasis */
+.trip-row span strong {
+    color: #222;
+}
+
+/* Responsive */
+@media (max-width: 600px) {
+    .trip-row {
+        flex-direction: column;
+        gap: 5px;
+    }
+}
