@@ -6,20 +6,30 @@
     <link rel="stylesheet" href="{% static 'css/logtrip.css' %}">
     <style>
 
-
     </style>
 {% endblock %}
-
 {% block content %}
+
     <div class="container">
+        {% if messages %}
+    <div class="messages-container">
+        {% for message in messages %}
+            <div class="message {{ message.tags }}">
+                {{ message }}
+            </div>
+        {% endfor %}
+    </div>
+{% endif %}
+
         <div class="row">
-            <div class="col-md-12">
+            <!-- Log Trip Form (33%) -->
+            <div class="col-md-4">
                 <div class="form-container">
                     <h2>Log Your Trip</h2>
                     <form id="trip-form" action="{% url "logtrip" %}" method="post">
                         {% csrf_token %}
                         <div class="autocomplete-container">
-                            <label for="destination">Source</label>
+                            <label for="source">Source</label>
                             <input type="text" id="source-input" name="source" placeholder="Enter source location" required />
                             <ul id="source-results" class="autocomplete-results"></ul>
                         </div>                        
@@ -31,7 +41,6 @@
                             <input type="text" id="destination-input" name="destination" placeholder="Enter destination location" required />
                             <ul id="destination-results" class="autocomplete-results"></ul>
                         </div>
-                        
                         <input type="hidden" id="dest-lat" name="dest_lat">
                         <input type="hidden" id="dest-lng" name="dest_lng">
 
@@ -58,7 +67,7 @@
                                 </select>
                             </div>
                             <div class="passenger-input">
-                                <label for="passenger-taken">Passengers(Not for Public Transport)</label>
+                                <label for="passenger-taken">Passengers (Not for Public Transport)</label>
                                 <input type="number" id="passengers" name="passengers" step="1"/>
                             </div>
                         </div>
@@ -73,42 +82,50 @@
                                 <input type="number" id="time-taken" name="time_taken" step="1" required />
                             </div>
                         </div>
-                        
 
-                             <!-- Hidden fields to capture API values -->
-                    <input type="hidden" id="calculated-distance" name="calculated_distance">
-                    <input type="hidden" id="calculated-duration" name="calculated_duration">
-                    
+                        <!-- Hidden fields to capture API values -->
+                        <input type="hidden" id="calculated-distance" name="calculated_distance">
+                        <input type="hidden" id="calculated-duration" name="calculated_duration">
+
                         <button type="submit">Submit Trip</button>
                     </form>
                 </div>
             </div>
-        </div>
-    </div>
-    {% if trip_logs %}
-    <h3>Recent Trips</h3>
-    <div class="trip-log-container">
-        {% for trip in trip_logs %}
-            <div class="trip-summary {% if trip.greener_travel %}green-trip{% else %}red-trip{% endif %}">
-                <div class="trip-row">
-                    <span><strong>From:</strong> {{ trip.source_address }}</span>
-                    <span><strong>To:</strong> {{ trip.destination_address }}</span>
-                </div>
-                <div class="trip-row">
-                    <span><strong>Date:</strong> {{ trip.date }}</span>
-                    <span><strong>Mode:</strong> {{ trip.mode_of_transport }}</span>
-                    <span><strong>Time:</strong> {{ trip.time_taken }} mins</span>
-                </div>
-                <div class="trip-row">
-                    <span><strong>Distance:</strong> {{ trip.api_distance }} km</span>
-                    <span><strong>CO₂ Emission:</strong> {{ trip.co2_emission }}g</span>
+
+            <!-- Recent Trips Section (66%) -->
+            <div class="col-md-8">
+                <div class="trip-container">
+                    <h3>Recent Trips</h3>
+                    <div class="trip-log-wrapper">
+                        <div class="trip-log-container">
+                            {% if trip_logs %}
+                                {% for trip in trip_logs %}
+                                    <div class="trip-summary {% if trip.greener_travel %}green-trip{% else %}red-trip{% endif %}">
+                                        <div class="trip-row">
+                                            <span><strong>From:</strong> {{ trip.source_address }}</span>
+                                            <span><strong>To:</strong> {{ trip.destination_address }}</span>
+                                            <span><strong>Date:</strong> {{ trip.date }}</span>
+                                        </div>
+                                        <div class="trip-row">
+                                            <span><strong>Mode:</strong> {{ trip.mode_of_transport }}</span>
+                                            <span><strong>Time:</strong> {{ trip.time_taken }} mins</span>
+                                            <span><strong>Distance:</strong> {{ trip.api_distance }} km</span>
+                                            <span><strong>CO₂ Emission:</strong> {{ trip.co2_emission }}g</span>
+                                        </div>
+                                    </div>
+                                {% endfor %}
+                            {% else %}
+                                <p class="no-trips">No trips logged yet.</p>
+                            {% endif %}
+                        </div>
+                    </div>
                 </div>
             </div>
-        {% endfor %}
+        </div>
     </div>
-{% endif %}
-
 {% endblock %}
+
+
 
 {% block extra_scripts %}
 <script>
