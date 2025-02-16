@@ -46,8 +46,8 @@ authappurl = [
 
 mainappurl = [
     path('homepage/', mviews.homepage, name='homepage'),
-    path('analyze/', mviews.analyze, name='analyze'),
-    path('log-trip/', mviews.log_trip, name='log_trip'),
+    path('logtrip/', mviews.logtrip, name='logtrip'),
+    path('leaderboards/', mviews.leaderboards, name='leaderboards'),
 ]
 urlpatterns = urlpatterns + authappurl + mainappurl
 

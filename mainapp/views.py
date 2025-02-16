@@ -4,11 +4,10 @@ from django.shortcuts import render,redirect
 def homepage(request):
     return render(request, 'mainapp/homepage.html')
 
-def analyze(request):
-    return render(request, 'mainapp/analyze.html')
 
 
-def log_trip(request):
+def logtrip(request):
+    user = request.user
     if request.method == "POST":
         source_address = request.POST.get("source")
         source_lat = request.POST.get("source_lat")
@@ -20,7 +19,7 @@ def log_trip(request):
         date = request.POST.get("date")
         time_taken = request.POST.get("time_taken")
         electric_vehicle = request.POST.get("electric_vehicle", "No") == "Yes"
-        
+        passengers = request.POST.get("passengers")
         # Fetch calculated distance and time from the frontend API response
         api_distance = request.POST.get("calculated_distance", "0")  # in kilometers
         api_duration = request.POST.get("calculated_duration", "0")  # in minutes
@@ -36,5 +35,10 @@ def log_trip(request):
         print("API Calculated Distance (km):", api_distance)
         print("API Calculated Duration (minutes):", api_duration)
         print("Electric Vehicle:", electric_vehicle)
+        print("User:",user)
+        print("Passengers:",passengers)
+        
+    return render(request, 'mainapp/logtrip.html')
 
-    return redirect("homepage")
+def leaderboards(request):
+    return render(request,'mainapp/leaderboards.html')
