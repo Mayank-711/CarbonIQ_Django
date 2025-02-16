@@ -288,18 +288,18 @@ button:active {
     display: flex;
     justify-content: center;
     align-items: center;
-    gap: 6px;
-    margin-top: 15px;
+    gap: 8px; /* Increased spacing */
+    margin-top: 20px;
 }
 
-/* Small Pagination Buttons */
+/* Larger Pagination Buttons */
 .pagination-btn {
-    max-width: 10px;
-    padding: 5px 10px;  /* Reduced padding */
+    max-width: 80px;  /* Increased width */
+    padding: 8px 14px; /* Increased padding */
     border: none;
-    border-radius: 5px; /* Smaller, rounded corners */
-    font-size: 12px;  /* Smaller text */
-    font-weight: 600;
+    border-radius: 6px; /* Slightly rounded corners */
+    font-size: 14px;  /* Slightly larger text */
+    font-weight: 700;
     color: white;
     cursor: pointer;
     transition: all 0.2s ease;
@@ -310,13 +310,13 @@ button:active {
 .pagination-btn:hover {
     background: linear-gradient(135deg, #003D29, #00563B);
     transform: translateY(-1px);
-    box-shadow: 0 2px 4px rgba(0, 86, 59, 0.2);
+    box-shadow: 0 3px 6px rgba(0, 86, 59, 0.25);
 }
 
 /* Button Click Effect */
 .pagination-btn:active {
     transform: translateY(0);
-    box-shadow: 0 1px 3px rgba(0, 86, 59, 0.15);
+    box-shadow: 0 2px 4px rgba(0, 86, 59, 0.2);
 }
 
 /* Disabled Buttons */
@@ -327,10 +327,11 @@ button:active {
     box-shadow: none;
 }
 
-/* Page Info */
+/* Page Info - Bigger & Bold */
 .page-info {
-    font-size: 12px;  /* Smaller text */
-    font-weight: 600;
+    font-size: 12px;  /* Increased text size */
+    font-weight: 700;
     color: #00563B;
 }
+
 
