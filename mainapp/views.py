@@ -1,3 +1,5 @@
+from collections import defaultdict
+import json
 from django.http import JsonResponse
 from django.shortcuts import render,redirect
 from django.contrib import messages
@@ -11,10 +13,76 @@ from django.db.models import Sum,F
 from datetime import date, datetime,timedelta
 # Create your views here.
 
+
 @login_required(login_url='/login/')
 def homepage(request):
+    user = request.user
+    today = now().date()
+    
+    # Weekly Data
+    week_start = today - timedelta(days=6)
+    weekly_trips = TripLog.objects.filter(user=user, date__range=[week_start, today])
 
-    return render(request, 'mainapp/homepage.html')
+    # Monthly Data
+    month_start = today - timedelta(days=29)
+    monthly_trips = TripLog.objects.filter(user=user, date__range=[month_start, today])
+
+    # Transport Modes for Pie Chart
+    transport_modes = weekly_trips.values_list('mode_of_transport', flat=True).distinct()
+    pie_labels = list(transport_modes)
+
+    # Inner Pie (Distance) & Outer Pie (CO₂ Emissions)
+    distance_values = [
+        weekly_trips.filter(mode_of_transport=mode).aggregate(
+            total_distance=Sum('api_distance')
+        )['total_distance'] or 0 for mode in transport_modes
+    ]
+
+    emission_values = [
+        weekly_trips.filter(mode_of_transport=mode).aggregate(
+            total_emission=Sum('co2_emission')
+        )['total_emission'] or 0 for mode in transport_modes
+    ]
+
+    # Weekly Line Graph (Daily CO₂ Emission)
+    daily_labels = [(week_start + timedelta(days=i)).strftime('%a') for i in range(7)]
+    daily_values = [
+        weekly_trips.filter(date=week_start + timedelta(days=i)).aggregate(
+            total_co2=Sum('co2_emission')
+        )['total_co2'] or 0 for i in range(7)
+    ]
+
+    # Monthly Line Graph (Daily CO₂ Emission)
+    monthly_labels = [(month_start + timedelta(days=i)).strftime('%d %b') for i in range(30)]
+    monthly_values = [
+        monthly_trips.filter(date=month_start + timedelta(days=i)).aggregate(
+            total_co2=Sum('co2_emission')
+        )['total_co2'] or 0 for i in range(30)
+    ]
+
+    # Stats Data
+    total_trips = weekly_trips.count()
+    greener_trips = weekly_trips.filter(greener_travel=True).count()
+    public_trips = weekly_trips.filter(public_transport=True).count()
+    total_co2_emission = weekly_trips.aggregate(total=Sum('co2_emission'))['total'] or 0
+
+    graph_data = {
+        'pie_labels': pie_labels,
+        'distance_values': distance_values,  # Inner pie (Distance)
+        'emission_values': emission_values,  # Outer pie (Emissions)
+        'daily_labels': daily_labels,
+        'daily_values': daily_values,
+        'monthly_labels': monthly_labels,
+        'monthly_values': monthly_values,
+        'total_trips': total_trips,
+        'greener_trips': greener_trips,
+        'public_trips': public_trips,
+        'total_co2_emission': total_co2_emission
+    }
+
+    return render(request, 'mainapp/homepage.html', {'graph_data': json.dumps(graph_data)})
+
+
 
 
 @login_required(login_url='/login/')

@@ -1,0 +1,86 @@
+/* General Page Styling */
+.container {
+    max-width: 1200px;
+    margin: 20px auto;
+    padding: 20px;
+}
+
+h1 {
+    text-align: center;
+    color: #00563B;
+    font-size: 28px;
+    font-weight: bold;
+    margin-bottom: 20px;
+}
+
+/* Dashboard Grid Layout */
+.dashboard {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    gap: 20px;
+    margin-top: 20px;
+}
+
+/* Graph Containers */
+.graph-container {
+    background: #fff;
+    padding: 15px;
+    border-radius: 10px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.graph-title {
+    font-size: 16px;
+    font-weight: 600;
+    color: #00563B;
+    margin-bottom: 10px;
+    text-align: center;
+}
+
+/* Chart Styling */
+canvas {
+    max-width: 100%;
+    height: auto;
+}
+
+/* Stats Cards */
+.stats-container {
+    display: flex;
+    justify-content: space-around;
+    flex-wrap: wrap;
+    margin-top: 20px;
+}
+
+.stat-card {
+    background: linear-gradient(135deg, #007A5E, #00563B);
+    color: white;
+    padding: 15px 20px;
+    border-radius: 10px;
+    min-width: 200px;
+    text-align: center;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+}
+
+.stat-card h3 {
+    font-size: 18px;
+    margin-bottom: 5px;
+}
+
+.stat-card p {
+    font-size: 22px;
+    font-weight: bold;
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+    .dashboard {
+        grid-template-columns: 1fr;
+    }
+
+    .stat-card {
+        margin-bottom: 10px;
+    }
+}
