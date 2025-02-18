@@ -142,6 +142,8 @@ def logtrip(request):
 
         if mode_of_transport[0] == "e":
             greener_travel = True
+        if mode_of_transport == "walk" or mode_of_transport == "cycle":
+            greener_travel = True
         if passengers > 3:
             greener_travel = True
         
